@@ -5,7 +5,7 @@ import json
 import requests
 import re
 
-def scrape(image_urls_out_f, thread_info_out_f, thread_url):
+def scrape(image_urls_out_f, thread_url):
 	m = re.search(r'4chan.org/(.*?)/thread/(\d*)(:?/.*)?', thread_url)
 	if not m:
 		print("[FAIL] Invalid thread url, skipping: "+thread_url, file=sys.stderr)
@@ -25,11 +25,12 @@ def scrape(image_urls_out_f, thread_info_out_f, thread_url):
 
 	data = r.json()
 
-	json.dump(data, thread_info_out_f,
-		sort_keys=True,
-		ensure_ascii=False,
-		indent='\t')
-	thread_info_out_f.write('\n')
+	with open('thread.{board}.{thread_id}.json'.format(**locals()), 'w') as thread_f:
+		json.dump(data, thread_f,
+			sort_keys=True,
+			ensure_ascii=False,
+			indent='\t')
+		thread_f.write('\n')
 	#TODO make whole file valid JSON.
 
 	for post in data['posts']:
@@ -42,14 +43,14 @@ def scrape(image_urls_out_f, thread_info_out_f, thread_url):
 	image_urls_out_f.write('\n')
 
 def main(args):
-	image_urls_out_filename, thread_info_out_filename, *urls = args
+	image_urls_out_filename, *urls = args
 
 	if not urls:
 		urls = [ line.strip() for line in sys.stdin if not line.isspace() ]
 
-	with open(image_urls_out_filename, 'w') as image_urls_out_f, open(thread_info_out_filename, 'w') as thread_info_out_f:
+	with open(image_urls_out_filename, 'w') as image_urls_out_f:
 		for thread_url in urls:
-			scrape(image_urls_out_f, thread_info_out_f, thread_url)
+			scrape(image_urls_out_f, thread_url)
 
 if __name__ == "__main__":
 	main(sys.argv[1:])

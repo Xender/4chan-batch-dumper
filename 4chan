@@ -1,4 +1,4 @@
 #!/bin/zsh
 
-${0:A:h}/4chan.py /tmp/4chan-download-filelist thread_data.txt "$@" &&
+${0:A:h}/4chan.py /tmp/4chan-download-filelist "$@" &&
 xargs < /tmp/4chan-download-filelist wget --no-clobber --progress=bar

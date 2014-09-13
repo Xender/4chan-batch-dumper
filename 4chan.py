@@ -35,7 +35,7 @@ def scrape(image_urls_out_f, thread_info_out_f, thread_url):
 	for post in data['posts']:
 		try:
 			filename = str(post['tim']) + post['ext']
-		except KeyError:
+		except KeyError: # No image in post
 			continue
 		file_url = "http://images.4chan.org/{board}/src/{filename}".format(**locals())
 		print(file_url, file=image_urls_out_f)

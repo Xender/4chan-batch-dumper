@@ -25,7 +25,8 @@ def scrape(thread_url):
 
 	data = r.json()
 
-	with open('thread.{board}.{thread_id}.json'.format(**locals()), 'w') as thread_f:
+	semantic_url = data['posts'][0]['semantic_url']
+	with open('thread.{board}.{thread_id}.{semantic_url}.json'.format(**locals()), 'w') as thread_f:
 		json.dump(data, thread_f,
 			sort_keys=True,
 			ensure_ascii=False,

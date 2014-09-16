@@ -5,11 +5,12 @@ import json
 import requests
 import re
 
+
 def scrape(thread_url):
 	m = re.search(r'4chan.org/(.*?)/thread/(\d*)(:?/.*)?', thread_url)
 	if not m:
 		print("[FAIL] Invalid thread url, skipping: "+thread_url, file=sys.stderr)
-		return
+		return None
 
 	board, thread_id = m.group(1, 2)
 
@@ -18,14 +19,15 @@ def scrape(thread_url):
 
 	if r.status_code == 404:
 		print("[FAIL] Thread 404'd, skipping: "+thread_url, file=sys.stderr)
-		return
+		return None
 
 	r.raise_for_status() # Throw at other errors.
 	print("[ OK ] "+thread_url, file=sys.stderr)
 
 	data = r.json()
+	posts = data['posts']
 
-	semantic_url = data['posts'][0]['semantic_url']
+	semantic_url = posts[0]['semantic_url']
 	with open('thread.{board}.{thread_id}.{semantic_url}.json'.format(**locals()), 'w') as thread_f:
 		json.dump(data, thread_f,
 			sort_keys=True,
@@ -33,7 +35,11 @@ def scrape(thread_url):
 			indent='\t')
 		thread_f.write('\n')
 
-	for post in data['posts']:
+	return board, thread_id, posts
+
+def process_thread(board, thread_id, posts):
+
+	for post in posts:
 		try:
 			filename = str(post['tim']) + post['ext']
 		except KeyError: # No image in post
@@ -47,7 +53,10 @@ def main(urls):
 		urls = [ line.strip() for line in sys.stdin if not line.isspace() ]
 
 	for thread_url in urls:
-		scrape(thread_url)
+		thread = scrape(thread_url)
+		if thread:
+			process_thread(*thread)
+
 
 if __name__ == "__main__":
 	main(sys.argv[1:])

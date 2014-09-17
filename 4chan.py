@@ -44,8 +44,10 @@ def process_thread(board, thread_id, posts):
 			filename = str(post['tim']) + post['ext']
 		except KeyError: # No image in post
 			continue
-		file_url = "http://images.4chan.org/{board}/src/{filename}".format(**locals())
+
+		file_url = 'http://images.4chan.org/{board}/src/{filename}'.format(**locals())
 		print(file_url)
+
 	sys.stdout.write('\n')
 
 def main(urls):

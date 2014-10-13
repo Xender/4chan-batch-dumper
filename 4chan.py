@@ -1,9 +1,12 @@
 #!/usr/bin/env python3
 
-import sys
 import json
-import requests
+import os.path
 import re
+import sys
+import urllib.request
+
+import requests
 
 
 def scrape(thread_url):
@@ -37,18 +40,22 @@ def scrape(thread_url):
 
 	return board, thread_id, posts
 
-def process_thread(board, thread_id, posts):
+def download(url, filename):
+	if not os.path.exists(filename):
+		sys.stderr.write(filename+" ")
+		sys.stderr.flush()
+		urllib.request.urlretrieve(url, filename)
+		sys.stderr.write("OK\n")
 
+def process_thread(board, thread_id, posts):
 	for post in posts:
 		try:
 			filename = str(post['tim']) + post['ext']
 		except KeyError: # No image in post
 			continue
 
-		file_url = 'http://images.4chan.org/{board}/src/{filename}'.format(**locals())
-		print(file_url)
-
-	sys.stdout.write('\n')
+		img_url = 'http://images.4chan.org/{board}/src/{filename}'.format(**locals())
+		download(img_url, filename)
 
 def main(urls):
 	if not urls:

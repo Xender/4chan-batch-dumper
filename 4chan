@@ -1,3 +1,0 @@
-#!/bin/zsh
-
-wget --no-clobber --progress=bar $(${0:A:h}/4chan.py "$@")

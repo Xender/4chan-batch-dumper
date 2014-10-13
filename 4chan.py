@@ -12,7 +12,7 @@ import requests
 def scrape(thread_url):
 	m = re.search(r'4chan.org/(.*?)/thread/(\d*)(:?/.*)?', thread_url)
 	if not m:
-		print("[FAIL] Invalid thread url, skipping: "+thread_url, file=sys.stderr)
+		print("[FAIL] Invalid thread url, skipping:", thread_url, file=sys.stderr)
 		return None
 
 	board, thread_id = m.group(1, 2)
@@ -21,11 +21,11 @@ def scrape(thread_url):
 	r = requests.get('https://a.4cdn.org/{board}/thread/{thread_id}.json'.format(**locals()))
 
 	if r.status_code == 404:
-		print("[FAIL] Thread 404'd, skipping: "+thread_url, file=sys.stderr)
+		print("[FAIL] Thread 404'd, skipping:", thread_url, file=sys.stderr)
 		return None
 
 	r.raise_for_status() # Throw at other errors.
-	print("[ OK ] "+thread_url, file=sys.stderr)
+	print("[ OK ]", thread_url, file=sys.stderr)
 
 	data = r.json()
 	posts = data['posts']

@@ -30,7 +30,7 @@ def scrape(thread_url):
 	data = r.json()
 	posts = data['posts']
 
-	thread_name = posts[0]['semantic_url']
+	thread_name = posts[0]['semantic_url'].replace('/', '_') # Don't blindly trust data from internet enough to mess up with path separator.
 	with open('thread.{board}.{thread_id}.{thread_name}.json'.format(**locals()), 'w') as thread_f:
 		json.dump(data, thread_f,
 			sort_keys=True,

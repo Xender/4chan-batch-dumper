@@ -15,7 +15,7 @@ def scrape(thread_url):
 		print("[FAIL] Invalid thread url, skipping:", thread_url, file=sys.stderr)
 		return None
 
-	board, thread_id = m.group(1, 2)
+	board, thread_id = m.groups()
 
 	r = requests.get('https://a.4cdn.org/{board}/thread/{thread_id}.json'.format(**locals()))
 

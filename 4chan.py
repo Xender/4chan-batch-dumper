@@ -10,7 +10,7 @@ import requests
 
 
 def scrape(thread_url):
-	m = re.search(r'4chan.org/(.*?)/thread/(\d*)(:?/.*)?', thread_url)
+	m = re.search(r'4chan.org/(.*?)/thread/(\d*)(?:/.*)?', thread_url)
 	if not m:
 		print("[FAIL] Invalid thread url, skipping:", thread_url, file=sys.stderr)
 		return None

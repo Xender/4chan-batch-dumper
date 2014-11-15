@@ -17,7 +17,6 @@ def scrape(thread_url):
 
 	board, thread_id = m.group(1, 2)
 
-	r = requests.get(thread_url+'.json')
 	r = requests.get('https://a.4cdn.org/{board}/thread/{thread_id}.json'.format(**locals()))
 
 	if r.status_code == 404:
